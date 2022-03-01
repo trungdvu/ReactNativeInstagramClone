@@ -3,6 +3,9 @@ import { colors } from './colors';
 
 export const theme = extendTheme({
   colors,
+  config: {
+    initialColorMode: 'light',
+  },
 });
 
 type TCustomThemeType = typeof theme;

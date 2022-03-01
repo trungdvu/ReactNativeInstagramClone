@@ -33,7 +33,7 @@ export const SecondaryButton: FC<ISecondaryButtonProps> = ({
         borderColor: 'dark.border',
         _pressed: {
           backgroundColor: 'transparent',
-          borderColor: 'black:alpha.40',
+          borderColor: 'white:alpha.80',
         },
       }}
       _text={{
