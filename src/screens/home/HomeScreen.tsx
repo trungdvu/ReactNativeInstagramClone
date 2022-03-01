@@ -1,6 +1,19 @@
 import React, { FC } from 'react';
-import { Text } from 'react-native';
+import { Center } from 'native-base';
+import {
+  LinkButton,
+  PrimaryButton,
+  SecondaryButton,
+  IconButton,
+} from 'components';
 
 export const HomeScreen: FC = () => {
-  return <Text style={{ paddingTop: 100 }}>Home Screen Nha</Text>;
+  return (
+    <Center flex={1}>
+      <PrimaryButton title="Follow" />
+      <SecondaryButton marginTop={1} title="Follow" />
+      <LinkButton marginTop={1} title="Follow" />
+      <IconButton iconName="ambulance" />
+    </Center>
+  );
 };
