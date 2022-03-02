@@ -8,7 +8,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ScreenName } from 'consts';
-import { HomeScreen, LaunchScreen, LoginScreen } from 'screens';
+import { HomeScreen, LaunchScreen, LoginScreen, SignupScreen } from 'screens';
 import { navigationRef, useBackButtonHandler } from './navigation-utilities';
 
 const Stack = createNativeStackNavigator();
@@ -49,6 +49,7 @@ export const AppNavigator = (props: AppNavigatorProps) => {
         <Stack.Screen name={ScreenName.Home} component={HomeScreen} />
         <Stack.Screen name={ScreenName.Launch} component={LaunchScreen} />
         <Stack.Screen name={ScreenName.Login} component={LoginScreen} />
+        <Stack.Screen name={ScreenName.Signup} component={SignupScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -14,6 +14,8 @@ import {
 import { FontAwesome } from '@expo/vector-icons';
 import { Controller, useForm } from 'react-hook-form';
 import { PrimaryButton, PrimaryInput } from 'components';
+import { resetWithScreen } from 'navigators/navigation-utilities';
+import { ScreenName } from 'consts';
 
 export const LoginScreen = () => {
   const [isHiddenPaassword, setIsHiddenPassword] = useState(false);
@@ -121,7 +123,7 @@ export const LoginScreen = () => {
                     <FontAwesome
                       style={{
                         margin: 10,
-                        padding: 4,
+                        padding: 1,
                       }}
                       size={20}
                       name={isHiddenPaassword ? 'eye' : 'eye-slash'}
@@ -208,6 +210,7 @@ export const LoginScreen = () => {
         borderTopColor={colorMode === 'dark' ? 'dark.border' : 'light.border'}
         alignItems="center"
         justifyContent="center"
+        onPress={() => resetWithScreen(ScreenName.Signup)}
       >
         <Text
           _light={{ color: 'light.text.secondary' }}
