@@ -8,9 +8,10 @@ export const LaunchScreen: FC = () => {
   const loadLocalData = async () => {
     await Promise.all([appLocalSettings.load]);
 
-    if (!appLocalSettings.didShowOnboarding) {
-      resetWithScreen(ScreenName.Home);
-    }
+    // if (!appLocalSettings.didShowOnboarding) {
+    //   resetWithScreen(ScreenName.Home);
+    // }
+    resetWithScreen(ScreenName.Login);
   };
 
   useEffect(() => {
