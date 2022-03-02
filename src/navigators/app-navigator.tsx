@@ -1,10 +1,14 @@
 import React, { ComponentProps } from 'react';
 import { useColorMode } from 'native-base';
-import { StatusBar } from 'expo-status-bar';
-import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { StatusBar, StatusBarStyle } from 'expo-status-bar';
+import {
+  DefaultTheme,
+  NavigationContainer,
+  Theme,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ScreenName } from 'consts';
-import { HomeScreen } from 'screens';
+import { HomeScreen, LaunchScreen } from 'screens';
 import { navigationRef, useBackButtonHandler } from './navigation-utilities';
 
 const Stack = createNativeStackNavigator();
@@ -16,12 +20,16 @@ export const AppNavigator = (props: AppNavigatorProps) => {
   useBackButtonHandler(canExit);
   const { colorMode } = useColorMode();
 
-  const getNavigationTheme = () => {
+  const getNavigationTheme = (): Theme => {
     const navigationTheme = DefaultTheme;
     navigationTheme.colors.background =
       colorMode === 'dark' ? '#000000' : '#fafafa';
 
     return navigationTheme;
+  };
+
+  const getStatusBarStyle = (): StatusBarStyle => {
+    return colorMode === 'dark' ? 'light' : 'dark';
   };
 
   return (
@@ -30,15 +38,16 @@ export const AppNavigator = (props: AppNavigatorProps) => {
       ref={navigationRef}
       {...props}
     >
-      <StatusBar style={colorMode === 'dark' ? 'light' : 'dark'} />
+      <StatusBar style={getStatusBarStyle()} />
       <Stack.Navigator
-        initialRouteName={ScreenName.Home}
+        initialRouteName={ScreenName.Launch}
         screenOptions={{
           headerBackTitleVisible: false,
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name={ScreenName.Home} component={HomeScreen} />
+        <Stack.Screen name={ScreenName.Launch} component={LaunchScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
