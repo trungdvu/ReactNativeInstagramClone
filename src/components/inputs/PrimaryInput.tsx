@@ -1,5 +1,5 @@
-import { IInputProps, Input } from 'native-base';
 import React from 'react';
+import { IInputProps, Input } from 'native-base';
 
 interface PrimaryInputProps extends IInputProps {
   isHiddenPassword?: boolean;
@@ -9,7 +9,7 @@ interface PrimaryInputProps extends IInputProps {
 export const PrimaryInput = ({
   value,
   placeholder,
-  isHiddenPassword,
+  isHiddenPassword = false,
   InputRightElement,
   onBlur,
   onChangeText,
@@ -21,7 +21,7 @@ export const PrimaryInput = ({
     variant={'filled'}
     backgroundColor={'black:alpha.5'}
     borderColor="light.border"
-    type={isHiddenPassword ? 'text' : 'password'}
+    type={isHiddenPassword ? 'password' : 'text'}
     placeholder={placeholder}
     InputRightElement={InputRightElement}
     value={value}

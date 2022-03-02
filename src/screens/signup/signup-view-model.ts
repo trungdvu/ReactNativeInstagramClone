@@ -15,7 +15,7 @@ export class SignupViewModel {
   }
 
   previousStep() {
-    this.step = this.step - 1;
+    this.step = this.step - 1 === 0 ? 1 : this.step - 1;
   }
 
   onChangePassword(value: string) {

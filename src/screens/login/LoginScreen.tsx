@@ -18,7 +18,7 @@ import { resetWithScreen } from 'navigators/navigation-utilities';
 import { ScreenName } from 'consts';
 
 export const LoginScreen = () => {
-  const [isHiddenPaassword, setIsHiddenPassword] = useState(false);
+  const [isHiddenPaassword, setIsHiddenPassword] = useState(true);
   const { colorMode } = useColorMode();
   const {
     control,
@@ -126,7 +126,7 @@ export const LoginScreen = () => {
                         padding: 1,
                       }}
                       size={20}
-                      name={isHiddenPaassword ? 'eye' : 'eye-slash'}
+                      name={isHiddenPaassword ? 'eye-slash' : 'eye'}
                       onPress={toggleHiddenPassword}
                     />
                   }

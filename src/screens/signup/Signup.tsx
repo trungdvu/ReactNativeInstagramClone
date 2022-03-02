@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import { Heading, Text, VStack } from 'native-base';
+import { Heading, Pressable, Text, useColorMode, VStack } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
 import { observer } from 'mobx-react-lite';
-import { LinkButton, PrimaryButton, PrimaryInput } from 'components';
+import {
+  LinkButton,
+  NavigatorHeader,
+  PrimaryButton,
+  PrimaryInput,
+} from 'components';
 import { SignupViewModel } from './signup-view-model';
+import { resetWithScreen } from 'navigators/navigation-utilities';
+import { ScreenName } from 'consts';
 
 export const SignupScreen = observer(() => {
-  const [isHiddenPaassword, setIsHiddenPassword] = useState(false);
+  const [isHiddenPaassword, setIsHiddenPassword] = useState(true);
   const [viewModel] = useState(new SignupViewModel());
+
+  const { colorMode } = useColorMode();
 
   const toggleHiddenPassword = () => {
     setIsHiddenPassword((pre) => !pre);
@@ -34,6 +43,8 @@ export const SignupScreen = observer(() => {
         </Text>
         <PrimaryInput
           width={'full'}
+          autoFocus={true}
+          isHiddenPassword={false}
           value={viewModel.username}
           placeholder="Username"
           onChangeText={(value) => viewModel.onChangeUsername(value)}
@@ -48,6 +59,31 @@ export const SignupScreen = observer(() => {
             fontWeight: 'bold',
           }}
         />
+
+        <Pressable
+          size={12}
+          width={'full'}
+          alignItems="center"
+          justifyContent="center"
+          onPress={() => resetWithScreen(ScreenName.Login)}
+        >
+          <Text
+            _light={{ color: 'light.text.secondary' }}
+            _dark={{ color: 'dark.text.secondary' }}
+          >
+            Already have an acoount?{' '}
+            <Text
+              bold
+              color={
+                colorMode === 'dark'
+                  ? 'dark.button.primary'
+                  : 'light.button.primary'
+              }
+            >
+              Log in now.
+            </Text>
+          </Text>
+        </Pressable>
       </React.Fragment>
     );
   };
@@ -68,8 +104,9 @@ export const SignupScreen = observer(() => {
         </Text>
         <PrimaryInput
           width={'full'}
-          value={viewModel.password}
           placeholder="Password"
+          autoFocus={true}
+          value={viewModel.password}
           isHiddenPassword={isHiddenPaassword}
           onChangeText={(value) => viewModel.onChangePassword(value)}
           InputRightElement={
@@ -79,7 +116,7 @@ export const SignupScreen = observer(() => {
                 padding: 1,
               }}
               size={20}
-              name={isHiddenPaassword ? 'eye' : 'eye-slash'}
+              name={isHiddenPaassword ? 'eye-slash' : 'eye'}
               onPress={toggleHiddenPassword}
             />
           }
@@ -100,7 +137,7 @@ export const SignupScreen = observer(() => {
 
   const renderStep3 = () => {
     return (
-      <VStack flex={1} space={3} paddingTop={32} justifyContent="space-between">
+      <VStack flex={1} space={3} paddingTop={20} justifyContent="space-between">
         <VStack space={3}>
           <Heading size={'xl'} fontWeight="normal" textAlign="center">
             {`Wellcome to Instagram, ${viewModel.username}`}
@@ -165,14 +202,14 @@ export const SignupScreen = observer(() => {
   };
 
   return (
-    <VStack
-      flex={1}
-      alignItems="center"
-      safeAreaTop={16}
-      space={3}
-      paddingX={5}
-    >
-      {renderStep()}
+    <VStack flex={1} safeAreaTop={10}>
+      <NavigatorHeader
+        isBackVisible={viewModel.step > 1}
+        onPressLeftButton={() => viewModel.previousStep()}
+      />
+      <VStack flex={1} alignItems="center" space={3} paddingX={5}>
+        {renderStep()}
+      </VStack>
     </VStack>
   );
 });
