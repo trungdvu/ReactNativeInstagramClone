@@ -16,6 +16,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { PrimaryButton, PrimaryInput } from 'components';
 import { resetWithScreen } from 'navigators/navigation-utilities';
 import { ScreenName } from 'consts';
+import { authViewModel } from 'view-models/auth-view-model';
 
 export const LoginScreen = () => {
   const [isHiddenPaassword, setIsHiddenPassword] = useState(true);
@@ -31,7 +32,7 @@ export const LoginScreen = () => {
   };
 
   const onPressLogin = (data) => {
-    console.log(data);
+    authViewModel.doLogin(data);
   };
 
   const toggleHiddenPassword = () => {
@@ -74,13 +75,7 @@ export const LoginScreen = () => {
           English (United State)
         </Button>
 
-        <VStack
-          paddingTop={32}
-          space={3}
-          paddingX={5}
-          width={'full'}
-          alignItems="center"
-        >
+        <VStack paddingTop={32} space={3} paddingX={5} width={'full'} alignItems="center">
           <Image
             width={48}
             height={16}
@@ -88,23 +83,21 @@ export const LoginScreen = () => {
             alt="Instagram Logo"
           />
 
-          <FormControl isInvalid={'username' in errors}>
+          <FormControl isInvalid={'email' in errors}>
             <Controller
-              name="username"
+              name="email"
               control={control}
-              rules={{ required: 'Please enter your username!' }}
+              rules={{ required: 'Please enter your email!' }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <PrimaryInput
                   value={value}
-                  placeholder="Phone number, email or username"
+                  placeholder="Email"
                   onChangeText={(value) => onChange(value)}
                   onBlur={onBlur}
                 />
               )}
             />
-            <FormControl.ErrorMessage>
-              {errors.username?.message}
-            </FormControl.ErrorMessage>
+            <FormControl.ErrorMessage>{errors.email?.message}</FormControl.ErrorMessage>
           </FormControl>
 
           <FormControl isInvalid={'password' in errors}>
@@ -133,9 +126,7 @@ export const LoginScreen = () => {
                 />
               )}
             />
-            <FormControl.ErrorMessage>
-              {errors.password?.message}
-            </FormControl.ErrorMessage>
+            <FormControl.ErrorMessage>{errors.password?.message}</FormControl.ErrorMessage>
           </FormControl>
 
           <PrimaryButton
@@ -149,12 +140,7 @@ export const LoginScreen = () => {
             }}
           />
 
-          <Pressable
-            size={8}
-            width={'full'}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Pressable size={8} width={'full'} alignItems="center" justifyContent="center">
             <Text
               _light={{ color: 'light.text.secondary' }}
               _dark={{ color: 'dark.text.secondary' }}
@@ -162,11 +148,7 @@ export const LoginScreen = () => {
               Forgot your login details?{' '}
               <Text
                 bold
-                color={
-                  colorMode === 'dark'
-                    ? 'dark.button.primary'
-                    : 'light.button.primary'
-                }
+                color={colorMode === 'dark' ? 'dark.button.primary' : 'light.button.primary'}
               >
                 Get help logging in.
               </Text>
@@ -212,19 +194,9 @@ export const LoginScreen = () => {
         justifyContent="center"
         onPress={() => resetWithScreen(ScreenName.Signup)}
       >
-        <Text
-          _light={{ color: 'light.text.secondary' }}
-          _dark={{ color: 'dark.text.secondary' }}
-        >
+        <Text _light={{ color: 'light.text.secondary' }} _dark={{ color: 'dark.text.secondary' }}>
           Don’t have an account?{' '}
-          <Text
-            bold
-            color={
-              colorMode === 'dark'
-                ? 'dark.button.primary'
-                : 'light.button.primary'
-            }
-          >
+          <Text bold color={colorMode === 'dark' ? 'dark.button.primary' : 'light.button.primary'}>
             Sign up.
           </Text>
         </Text>

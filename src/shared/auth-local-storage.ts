@@ -1,4 +1,4 @@
-import { LocalStorageService } from 'services';
+import { LocalStorageService } from 'services/local-storage-service';
 import { logd, toJSONStr } from './log';
 
 const TAG = 'AUTH_LOCAL_STORAGE';
@@ -7,6 +7,7 @@ class AuthLocalStorage extends LocalStorageService {
   private static instance: AuthLocalStorage;
 
   accessToken: string = '';
+  auth: any = null;
 
   public static sharedInstance(): AuthLocalStorage {
     if (!AuthLocalStorage.instance) {
@@ -20,6 +21,12 @@ class AuthLocalStorage extends LocalStorageService {
     this.accessToken = token;
     this.save();
     logd(TAG, `setAccessToken ${token} successfully`);
+  }
+
+  setAuth(auth: any) {
+    this.auth = auth;
+    this.save();
+    logd(TAG, `setAuth ${auth} successfully`);
   }
 
   async load() {

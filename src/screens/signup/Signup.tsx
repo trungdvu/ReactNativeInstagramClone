@@ -2,15 +2,11 @@ import React, { useState } from 'react';
 import { Heading, Pressable, Text, useColorMode, VStack } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
 import { observer } from 'mobx-react-lite';
-import {
-  LinkButton,
-  NavigatorHeader,
-  PrimaryButton,
-  PrimaryInput,
-} from 'components';
+import { LinkButton, NavigatorHeader, PrimaryButton, PrimaryInput } from 'components';
 import { SignupViewModel } from './signup-view-model';
 import { resetWithScreen } from 'navigators/navigation-utilities';
 import { ScreenName } from 'consts';
+import { authViewModel } from 'view-models/auth-view-model';
 
 export const SignupScreen = observer(() => {
   const [isHiddenPaassword, setIsHiddenPassword] = useState(true);
@@ -23,9 +19,10 @@ export const SignupScreen = observer(() => {
   };
 
   const onPressCompleteSignup = () => {
-    console.log('onPress complete sign up');
-    console.log(viewModel.username);
-    console.log(viewModel.password);
+    authViewModel.doCreateAccountWithEmailAndPassword({
+      email: viewModel.email,
+      password: viewModel.password,
+    });
   };
 
   const onPressAddNewPhone = () => {
@@ -36,7 +33,7 @@ export const SignupScreen = observer(() => {
     return (
       <React.Fragment>
         <Heading size={'xl'} fontWeight="normal">
-          Choose username
+          Enter your email
         </Heading>
         <Text fontSize={'md'} color="light.text.secondary">
           You can always change it later.
@@ -45,9 +42,9 @@ export const SignupScreen = observer(() => {
           width={'full'}
           autoFocus={true}
           isHiddenPassword={false}
-          value={viewModel.username}
-          placeholder="Username"
-          onChangeText={(value) => viewModel.onChangeUsername(value)}
+          value={viewModel.email}
+          placeholder="Email"
+          onChangeText={(value) => viewModel.onChangeEmail(value)}
         />
         <PrimaryButton
           title="Next"
@@ -67,18 +64,11 @@ export const SignupScreen = observer(() => {
           justifyContent="center"
           onPress={() => resetWithScreen(ScreenName.Login)}
         >
-          <Text
-            _light={{ color: 'light.text.secondary' }}
-            _dark={{ color: 'dark.text.secondary' }}
-          >
+          <Text _light={{ color: 'light.text.secondary' }} _dark={{ color: 'dark.text.secondary' }}>
             Already have an acoount?{' '}
             <Text
               bold
-              color={
-                colorMode === 'dark'
-                  ? 'dark.button.primary'
-                  : 'light.button.primary'
-              }
+              color={colorMode === 'dark' ? 'dark.button.primary' : 'light.button.primary'}
             >
               Log in now.
             </Text>
@@ -94,12 +84,7 @@ export const SignupScreen = observer(() => {
         <Heading size={'xl'} fontWeight="normal">
           Create a passoword
         </Heading>
-        <Text
-          fontSize={'md'}
-          color="light.text.secondary"
-          paddingX={8}
-          textAlign="center"
-        >
+        <Text fontSize={'md'} color="light.text.secondary" paddingX={8} textAlign="center">
           For sercurity your password must be 6 characters or more.
         </Text>
         <PrimaryInput
@@ -140,16 +125,11 @@ export const SignupScreen = observer(() => {
       <VStack flex={1} space={3} paddingTop={20} justifyContent="space-between">
         <VStack space={3}>
           <Heading size={'xl'} fontWeight="normal" textAlign="center">
-            {`Wellcome to Instagram, ${viewModel.username}`}
+            {`Wellcome to Instagram, ${viewModel.email}`}
           </Heading>
-          <Text
-            fontSize={'md'}
-            color="light.text.secondary"
-            paddingX={6}
-            textAlign="center"
-          >
-            We'll add the email and phone number from blah blah. You can update
-            this info anytime in Settings. or enter new info now.
+          <Text fontSize={'md'} color="light.text.secondary" paddingX={6} textAlign="center">
+            We'll add the email and phone number from blah blah. You can update this info anytime in
+            Settings. or enter new info now.
           </Text>
           <PrimaryButton
             title="Complete sign up"
@@ -176,7 +156,7 @@ export const SignupScreen = observer(() => {
         </VStack>
 
         <Text marginBottom={4} color="light.text.secondary" textAlign="center">
-          {`We'll add private info from blah blah to ${viewModel.username}. See `}
+          {`We'll add private info from blah blah to ${viewModel.email}. See `}
           <Text bold color={'light.button.primary'}>
             Terms, Data Policy
           </Text>

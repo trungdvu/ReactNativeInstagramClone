@@ -3,7 +3,7 @@ import { makeAutoObservable } from 'mobx';
 export class SignupViewModel {
   loading = false;
   step = 1;
-  username = '';
+  email = '';
   password = '';
 
   constructor() {
@@ -22,7 +22,7 @@ export class SignupViewModel {
     this.password = value;
   }
 
-  onChangeUsername(value: string) {
-    this.username = value;
+  onChangeEmail(value: string) {
+    this.email = value;
   }
 }

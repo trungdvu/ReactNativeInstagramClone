@@ -25,7 +25,7 @@ export const logd = (tag: string, msg: string): void => {
 
 export const loge = (tag: string, msg: string): void => {
   if (__DEV__) {
-    console.warn(`[${tag}] ${msg}`);
+    console.error(`[${tag}] ${msg}`);
   }
 };
 

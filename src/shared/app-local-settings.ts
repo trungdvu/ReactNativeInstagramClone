@@ -1,4 +1,4 @@
-import { LocalStorageService } from 'services';
+import { LocalStorageService } from 'services/local-storage-service';
 import { logd, toJSONStr } from './log';
 
 const TAG = 'APP_LOCAL_SETTINGS';
