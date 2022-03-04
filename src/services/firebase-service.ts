@@ -4,7 +4,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
+  signOut,
 } from 'firebase/auth';
 import {
   getStorage,
@@ -23,12 +23,12 @@ import {
 } from 'firebase/database';
 import _ from 'lodash';
 import { LoginPayload, SignupPayload } from 'interfaces';
-import { loge } from 'shared';
 import { UserModel } from 'models';
+import { loge } from 'shared';
 
 const TAG = 'FIREBASE_SERVICE';
 
-// Just in case we want to hide configs/firebase-env.ts
+// Just in case we want to ignore configs/firebase-env.ts
 const config = {
   apiKey: `${firebaseConfig.apiKey}`,
   authDomain: `${firebaseConfig.authDomain}`,
@@ -91,30 +91,34 @@ const doGetCurrentUser = () => {
   });
 };
 
-const doCreateUserWithEmailAndPassword = async (
-  payload: SignupPayload
-): Promise<UserModel | null> => {
+const doCreateUserWithEmailAndPassword = async ({
+  email,
+  password,
+}: SignupPayload): Promise<UserModel> => {
   try {
-    const { email, password } = payload;
-
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
     const userToStore = new UserModel(user);
+
     await databaseSet(databaseRef(database, `users/${user.uid}`), userToStore);
+
     return userToStore;
   } catch (error: any) {
     loge(TAG, `${error.message}`);
-    return null;
+    throw error;
   }
 };
 
-const doSignInWithEmailAndPassword = async (payload: LoginPayload): Promise<UserModel | null> => {
+const doSignInWithEmailAndPassword = async ({
+  email,
+  password,
+}: LoginPayload): Promise<UserModel> => {
   try {
-    const { email, password } = payload;
     const { user } = await signInWithEmailAndPassword(auth, email, password);
+
     return new UserModel(user);
   } catch (error: any) {
     loge(TAG, `${error.message}`);
-    return null;
+    throw error;
   }
 };
 
@@ -124,6 +128,7 @@ export {
   uploadBytesResumable,
   getDownloadURL as doGetDownloadURL,
   auth,
+  signOut as doSignOut,
   doCreateUserWithEmailAndPassword,
   doSignInWithEmailAndPassword,
   doGetUserDocument,
@@ -136,5 +141,4 @@ export {
   databaseGet,
   databaseChild,
   databaseOff,
-  User,
 };

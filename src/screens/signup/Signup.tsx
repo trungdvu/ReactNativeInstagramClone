@@ -19,7 +19,7 @@ export const SignupScreen = observer(() => {
   };
 
   const onPressCompleteSignup = () => {
-    authViewModel.doCreateAccountWithEmailAndPassword({
+    authViewModel.doSignup({
       email: viewModel.email,
       password: viewModel.password,
     });

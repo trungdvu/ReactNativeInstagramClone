@@ -42,8 +42,9 @@ export class HttpService {
       const response: ResponseModel = {
         status,
         errorCode,
-        errorMessage: data.message,
-        data: {},
+        data: {
+          message: data.message,
+        },
       };
 
       loge(TAG, `ERROR ${errorCode} ${method} ${url}: ${toJSONStr(data)}`);
@@ -53,8 +54,10 @@ export class HttpService {
       const response: ResponseModel = {
         status: error.request.status,
         errorCode: +(error.code || '') || ErrorCode.Unknow,
-        errorMessage: error.message,
-        data: {},
+
+        data: {
+          message: 'Unknown error',
+        },
       };
 
       loge(TAG, `ERROR unkown: ${toJSONStr(response)}`);

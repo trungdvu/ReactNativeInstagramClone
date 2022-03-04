@@ -1,18 +1,8 @@
-import { CometChat } from '@cometchat-pro/react-native-chat';
-import { cometChatConfig } from 'configs';
-import { LoginPayload, SignupCometPayload, SignupPayload } from 'interfaces';
-import _ from 'lodash';
+import { LoginPayload, SignupPayload } from 'interfaces';
 import { makeAutoObservable } from 'mobx';
-import { UserModel } from 'models';
-import {
-  AuthService,
-  doCreateUserWithEmailAndPassword,
-  doGetUserDocument,
-  doSignInWithEmailAndPassword,
-} from 'services';
-import { authLocalStorage, logd, loge } from 'shared';
-
-const TAG = 'AUTH_VIEW_MODEL';
+import { ErrorModel, UserModel } from 'models';
+import { AuthService } from 'services';
+import { authLocalStorage } from 'shared';
 
 export class AuthViewModel {
   private static instance: AuthViewModel;
@@ -22,6 +12,7 @@ export class AuthViewModel {
   loadingSignup = false;
   loadingLogout = false;
   currentUser: UserModel | null = null;
+  error: ErrorModel | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -40,72 +31,55 @@ export class AuthViewModel {
     this.currentUser = user;
   }
 
-  async doLogin(payload: LoginPayload) {
-    try {
-      this.loadingLogin = true;
-      const user = await doSignInWithEmailAndPassword(payload);
-      if (user) {
-        await this.doLoginCometChat(user);
-      }
-    } catch (error) {
-      this.loadingLogin = false;
-      logd(TAG, `Your username or password maybe is not correct`);
+  *doLogin(payload: LoginPayload) {
+    this.loadingLogin = true;
+
+    const response = yield this.service.doLogin(payload);
+
+    const { data, errorCode } = response;
+    if (errorCode) {
+      this.error = {
+        errorCode,
+        data,
+      };
+    } else {
+      this.currentUser = data;
     }
+
+    this.loadingLogin = false;
   }
 
-  private async doLoginCometChat(authUser: UserModel) {
-    try {
-      this.loadingLogin = true;
+  *doSignup(payload: SignupPayload) {
+    this.loadingSignup = true;
 
-      const user = await CometChat.login(authUser.uid, `${cometChatConfig.cometChatAuthKey}`);
-      if (user) {
-        this.setCurrentUser(authUser);
-        console.log(this.currentUser);
-        authLocalStorage.setAuth(authUser);
-      }
-    } catch (error: any) {
-      logd(TAG, `Your username or password maybe is not correct`);
-    } finally {
-      this.loadingLogin = false;
+    const response = yield this.service.doSignup(payload);
+
+    const { errorCode, data } = response;
+    if (errorCode) {
+      this.error = {
+        errorCode,
+        data,
+      };
+    } else {
+      yield this.doLogin(payload);
     }
+
+    this.loadingSignup = false;
   }
 
-  private async doCreateCometChatAccount({
-    uid,
-    email,
-    displayName,
-    photoURL,
-  }: SignupCometPayload) {
-    try {
-      const user = new CometChat.User(uid);
-      user.setName(displayName || email);
-      user.setAvatar(photoURL || 'https://avatars.githubusercontent.com/u/61225238?v=4');
+  *doLogout() {
+    this.loadingLogout = true;
 
-      const authKey = `${cometChatConfig.cometChatAuthKey}`;
-      const cometChatUser = await CometChat.createUser(user, authKey);
-
-      return cometChatUser;
-    } catch (error: any) {
-      loge(TAG, 'Fail to create your CometChat user, please try again');
-    } finally {
-      this.loadingLogin = false;
-      return;
+    const response = yield this.service.doLogout();
+    const { errorCode, data } = response;
+    if (errorCode) {
+      this.error = {
+        errorCode,
+        data,
+      };
     }
-  }
 
-  async doCreateAccountWithEmailAndPassword(payload: SignupPayload) {
-    try {
-      this.loadingSignup = true;
-      const user = await doCreateUserWithEmailAndPassword(payload);
-      if (user) {
-        await this.doCreateCometChatAccount(user);
-        await this.doLogin(payload);
-      }
-    } catch (error) {
-      loge(TAG, 'Fail to create your account, your account might be existed');
-    } finally {
-      this.loadingSignup = false;
-    }
+    this.loadingLogout = false;
   }
 }
 

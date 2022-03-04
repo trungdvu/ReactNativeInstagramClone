@@ -5,6 +5,5 @@ export const ErrorCode = {
 
 export interface ErrorModel {
   errorCode: number | string;
-  message: string;
   data?: any;
 }
