@@ -5,10 +5,7 @@ interface IPrimaryButtonProps extends IButtonProps {
   title?: string;
 }
 
-export const PrimaryButton: FC<IPrimaryButtonProps> = ({
-  title = 'Primary Button',
-  ...props
-}) => {
+export const PrimaryButton: FC<IPrimaryButtonProps> = ({ title = 'Primary Button', ...props }) => {
   return (
     <Button
       opacity={props.disabled ? 50 : 100}
@@ -31,6 +28,11 @@ export const PrimaryButton: FC<IPrimaryButtonProps> = ({
       style={{
         paddingTop: 3,
         paddingBottom: 3,
+      }}
+      _loading={{
+        _text: {
+          color: 'white',
+        },
       }}
       {...props}
     >

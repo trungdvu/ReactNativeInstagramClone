@@ -21,9 +21,7 @@ export const RootNavigation = {
 
 export const navigationRef = createNavigationContainerRef();
 
-export function getActiveRouteName(
-  state: NavigationState | PartialState<NavigationState>
-) {
+export function getActiveRouteName(state: NavigationState | PartialState<NavigationState>) {
   const route = state.index ? state.routes[state.index] : undefined;
 
   if (!route?.state) {
@@ -33,9 +31,7 @@ export function getActiveRouteName(
   return getActiveRouteName(route.state);
 }
 
-export function useBackButtonHandler(
-  canExit: (routeName: ScreenName) => boolean
-) {
+export function useBackButtonHandler(canExit: (routeName: ScreenName) => boolean) {
   const canExitRef = useRef(canExit);
 
   useEffect(() => {
@@ -63,8 +59,7 @@ export function useBackButtonHandler(
 
     BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
   }, []);
 }
 

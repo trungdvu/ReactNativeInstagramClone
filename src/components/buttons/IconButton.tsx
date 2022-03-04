@@ -11,7 +11,7 @@ interface IIconButtonProps extends IButtonProps {
 
 export const IconButton = ({
   iconName = 'amazon',
-  iconSize = 24,
+  iconSize = 20,
   iconColor = 'black',
   ...props
 }: IIconButtonProps) => {
@@ -19,9 +19,7 @@ export const IconButton = ({
     <Button
       variant="unstyled"
       opacity={props.disabled ? 40 : 100}
-      startIcon={
-        <FontAwesome size={iconSize} color={iconColor} name={iconName} />
-      }
+      startIcon={<FontAwesome size={iconSize} color={iconColor} name={iconName} />}
       {...props}
     />
   );

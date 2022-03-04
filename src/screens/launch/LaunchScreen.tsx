@@ -1,15 +1,17 @@
 import React, { FC, useEffect } from 'react';
 import { Text, Center, Image, Flex } from 'native-base';
-import { appLocalSettings } from 'shared';
+import { appLocalSettings, authLocalStorage } from 'shared';
 import { resetWithScreen } from 'navigators/navigation-utilities';
 import { ScreenName } from 'consts';
 
 export const LaunchScreen: FC = () => {
   const loadLocalData = async () => {
-    await Promise.all([appLocalSettings.load]);
+    await Promise.all([appLocalSettings.load(), authLocalStorage.load()]);
 
-    if (!appLocalSettings.didShowOnboarding) {
+    if (authLocalStorage.auth) {
       resetWithScreen(ScreenName.Home);
+    } else {
+      resetWithScreen(ScreenName.Login);
     }
   };
 
@@ -26,12 +28,7 @@ export const LaunchScreen: FC = () => {
         alt="Instagram Logo"
       />
 
-      <Flex
-        direction="column"
-        alignItems={'center'}
-        position="absolute"
-        bottom={10}
-      >
+      <Flex direction="column" alignItems={'center'} position="absolute" bottom={10}>
         <Text
           alignContent={'center'}
           _light={{
