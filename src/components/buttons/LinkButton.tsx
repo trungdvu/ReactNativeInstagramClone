@@ -5,10 +5,7 @@ interface ILinkButtonProps extends IButtonProps {
   title?: string;
 }
 
-export const LinkButton: FC<ILinkButtonProps> = ({
-  title = 'Link Button',
-  ...props
-}) => {
+export const LinkButton: FC<ILinkButtonProps> = ({ title = 'Link Button', ...props }) => {
   return (
     <Button
       variant="link"

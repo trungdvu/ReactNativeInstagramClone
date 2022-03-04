@@ -4,3 +4,6 @@ android
 .vscode
 ignite/ignite.json
 package.json
+.expo
+.node_modules
+.public

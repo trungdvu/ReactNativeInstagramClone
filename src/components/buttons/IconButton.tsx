@@ -19,9 +19,7 @@ export const IconButton = ({
     <Button
       variant="unstyled"
       opacity={props.disabled ? 40 : 100}
-      startIcon={
-        <FontAwesome size={iconSize} color={iconColor} name={iconName} />
-      }
+      startIcon={<FontAwesome size={iconSize} color={iconColor} name={iconName} />}
       {...props}
     />
   );

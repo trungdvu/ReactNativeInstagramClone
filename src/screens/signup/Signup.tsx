@@ -6,7 +6,7 @@ import { LinkButton, NavigatorHeader, PrimaryButton, PrimaryInput } from 'compon
 import { SignupViewModel } from './signup-view-model';
 import { resetWithScreen } from 'navigators/navigation-utilities';
 import { ScreenName } from 'consts';
-import { authViewModel } from 'view-models/auth-view-model';
+import { authViewModel } from 'view-models';
 
 export const SignupScreen = observer(() => {
   const [isHiddenPaassword, setIsHiddenPassword] = useState(true);

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Center, useColorMode } from 'native-base';
 import { LinkButton, PrimaryButton, SecondaryButton, IconButton } from 'components';
-import { authViewModel } from 'view-models/auth-view-model';
+import { authViewModel } from 'view-models';
 
 export const HomeScreen: FC = () => {
   const { toggleColorMode } = useColorMode();

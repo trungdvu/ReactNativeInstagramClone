@@ -1,11 +1,7 @@
 import React, { ComponentProps } from 'react';
 import { useColorMode } from 'native-base';
 import { StatusBar, StatusBarStyle } from 'expo-status-bar';
-import {
-  DefaultTheme,
-  NavigationContainer,
-  Theme,
-} from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer, Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ScreenName } from 'consts';
 import { HomeScreen, LaunchScreen, LoginScreen, SignupScreen } from 'screens';
@@ -13,8 +9,7 @@ import { navigationRef, useBackButtonHandler } from './navigation-utilities';
 
 const Stack = createNativeStackNavigator();
 
-interface AppNavigatorProps
-  extends Partial<ComponentProps<typeof NavigationContainer>> {}
+interface AppNavigatorProps extends Partial<ComponentProps<typeof NavigationContainer>> {}
 
 export const AppNavigator = (props: AppNavigatorProps) => {
   useBackButtonHandler(canExit);
@@ -22,8 +17,7 @@ export const AppNavigator = (props: AppNavigatorProps) => {
 
   const getNavigationTheme = (): Theme => {
     const navigationTheme = DefaultTheme;
-    navigationTheme.colors.background =
-      colorMode === 'dark' ? '#000000' : '#fafafa';
+    navigationTheme.colors.background = colorMode === 'dark' ? '#000000' : '#fafafa';
 
     return navigationTheme;
   };
@@ -33,11 +27,7 @@ export const AppNavigator = (props: AppNavigatorProps) => {
   };
 
   return (
-    <NavigationContainer
-      theme={getNavigationTheme()}
-      ref={navigationRef}
-      {...props}
-    >
+    <NavigationContainer theme={getNavigationTheme()} ref={navigationRef} {...props}>
       <StatusBar style={getStatusBarStyle()} />
       <Stack.Navigator
         initialRouteName={ScreenName.Launch}
@@ -57,5 +47,4 @@ export const AppNavigator = (props: AppNavigatorProps) => {
 
 const exitRoutes = [ScreenName.Home];
 
-export const canExit = (routeName: ScreenName) =>
-  exitRoutes.includes(routeName);
+export const canExit = (routeName: ScreenName) => exitRoutes.includes(routeName);

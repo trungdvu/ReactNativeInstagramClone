@@ -5,10 +5,7 @@ interface IPrimaryButtonProps extends IButtonProps {
   title?: string;
 }
 
-export const PrimaryButton: FC<IPrimaryButtonProps> = ({
-  title = 'Primary Button',
-  ...props
-}) => {
+export const PrimaryButton: FC<IPrimaryButtonProps> = ({ title = 'Primary Button', ...props }) => {
   return (
     <Button
       opacity={props.disabled ? 50 : 100}

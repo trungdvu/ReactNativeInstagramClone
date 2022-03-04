@@ -16,7 +16,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { PrimaryButton, PrimaryInput } from 'components';
 import { resetWithScreen } from 'navigators/navigation-utilities';
 import { ScreenName } from 'consts';
-import { authViewModel } from 'view-models/auth-view-model';
+import { authViewModel } from 'view-models';
 
 export const LoginScreen = () => {
   const [isHiddenPaassword, setIsHiddenPassword] = useState(true);

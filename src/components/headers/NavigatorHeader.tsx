@@ -16,13 +16,7 @@ export const NavigatorHeader = ({
 }: INavigatorHeaderProps) => {
   return (
     <Box style={[{ height: 60 }, props.style]}>
-      <Box
-        mx={2}
-        flex={1}
-        flexDir="row"
-        alignItems="center"
-        justifyContent={'flex-start'}
-      >
+      <Box mx={2} flex={1} flexDir="row" alignItems="center" justifyContent={'flex-start'}>
         <IconButton
           opacity={isBackVisible ? 100 : 0}
           iconName="chevron-left"
