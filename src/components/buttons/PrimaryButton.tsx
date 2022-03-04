@@ -29,6 +29,11 @@ export const PrimaryButton: FC<IPrimaryButtonProps> = ({ title = 'Primary Button
         paddingTop: 3,
         paddingBottom: 3,
       }}
+      _loading={{
+        _text: {
+          color: 'white',
+        },
+      }}
       {...props}
     >
       {title}

@@ -1,18 +1,37 @@
-import React, { useState } from 'react';
-import { Heading, Pressable, Text, useColorMode, VStack } from 'native-base';
+import React, { useEffect, useRef, useState } from 'react';
+import { Heading, Pressable, Spinner, Text, useColorMode, VStack } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
+import { BehaviorSubject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import validator from 'validator';
 import { LinkButton, NavigatorHeader, PrimaryButton, PrimaryInput } from 'components';
-import { SignupViewModel } from './signup-view-model';
 import { resetWithScreen } from 'navigators/navigation-utilities';
 import { ScreenName } from 'consts';
 import { authViewModel } from 'view-models';
+import { SignupViewModel } from './signup-view-model';
+import _ from 'lodash';
 
 export const SignupScreen = observer(() => {
   const [isHiddenPaassword, setIsHiddenPassword] = useState(true);
   const [viewModel] = useState(new SignupViewModel());
+  const subject = useRef(new BehaviorSubject('')).current;
 
   const { colorMode } = useColorMode();
+
+  useEffect(() => {
+    authViewModel.setError(null);
+
+    subject.pipe(distinctUntilChanged(), debounceTime(250)).subscribe((text) => {
+      if (validator.isEmail(text)) {
+        authViewModel.checkAccountExisted(text);
+      }
+    });
+
+    return () => {
+      subject.unsubscribe();
+    };
+  }, []);
 
   const toggleHiddenPassword = () => {
     setIsHiddenPassword((pre) => !pre);
@@ -29,28 +48,99 @@ export const SignupScreen = observer(() => {
     console.log('onPress add new phone or email');
   };
 
-  const renderStep1 = () => {
+  const onPressNext = () => {
+    if (viewModel.step === 1 && validator.isEmail(viewModel.email)) {
+      viewModel.nextStep();
+    } else if (viewModel.step === 2 && viewModel.email.length > 6) {
+      viewModel.nextStep();
+    }
+  };
+
+  const onChangeTextEmail = (text: string, forceTrigger = false) => {
+    viewModel.onChangeEmail(text);
+
+    if (forceTrigger) {
+      authViewModel.checkAccountExisted(text);
+    } else if (_.isFunction(subject.next)) {
+      subject.next(text);
+    }
+  };
+
+  const renderSpinnerCheckingAccountExistd = () => {
     return (
-      <React.Fragment>
-        <Heading size={'xl'} fontWeight="normal">
+      <Observer>
+        {() => {
+          const { loadingCheckAccountExisted } = authViewModel;
+          return (
+            <Spinner
+              opacity={loadingCheckAccountExisted ? 100 : 0}
+              hidesWhenStopped={true}
+              style={{
+                margin: 10,
+                padding: 1,
+              }}
+            />
+          );
+        }}
+      </Observer>
+    );
+  };
+
+  const renderError = () => {
+    return (
+      <Observer>
+        {() => {
+          const { error } = authViewModel;
+          if (!error?.errorCode) {
+            return <React.Fragment />;
+          } else {
+            return (
+              <Text color={'light.info.error'} textAlign="left" width={'full'}>
+                {`*${error?.data}`}
+              </Text>
+            );
+          }
+        }}
+      </Observer>
+    );
+  };
+
+  const isDisabledButtonNextStep1 = () => {
+    if (!validator.isEmail(viewModel.email) || authViewModel.error?.errorCode) {
+      return true;
+    }
+    return false;
+  };
+
+  const Step1 = observer(() => {
+    return (
+      <VStack width={'full'} space={3}>
+        <Heading size={'xl'} fontWeight="normal" textAlign={'center'}>
           Enter your email
         </Heading>
-        <Text fontSize={'md'} color="light.text.secondary">
+        <Text fontSize={'md'} color="light.text.secondary" textAlign={'center'}>
           You can always change it later.
         </Text>
         <PrimaryInput
           width={'full'}
           autoFocus={true}
           isHiddenPassword={false}
+          returnKeyType="go"
+          onSubmitEditing={onPressNext}
           value={viewModel.email}
           placeholder="Email"
-          onChangeText={(value) => viewModel.onChangeEmail(value)}
+          onChangeText={onChangeTextEmail}
+          InputRightElement={renderSpinnerCheckingAccountExistd()}
         />
+
+        {renderError()}
+
         <PrimaryButton
           title="Next"
           width={'full'}
           size={12}
-          onPress={() => viewModel.nextStep()}
+          onPress={onPressNext}
+          disabled={isDisabledButtonNextStep1()}
           _text={{
             fontSize: 16,
             fontWeight: 'bold',
@@ -74,14 +164,14 @@ export const SignupScreen = observer(() => {
             </Text>
           </Text>
         </Pressable>
-      </React.Fragment>
+      </VStack>
     );
-  };
+  });
 
-  const renderStep2 = () => {
+  const Step2 = observer(() => {
     return (
-      <React.Fragment>
-        <Heading size={'xl'} fontWeight="normal">
+      <VStack width="full" space={3}>
+        <Heading size={'xl'} fontWeight="normal" textAlign={'center'}>
           Create a passoword
         </Heading>
         <Text fontSize={'md'} color="light.text.secondary" paddingX={8} textAlign="center">
@@ -91,8 +181,10 @@ export const SignupScreen = observer(() => {
           width={'full'}
           placeholder="Password"
           autoFocus={true}
+          returnKeyType="go"
           value={viewModel.password}
           isHiddenPassword={isHiddenPaassword}
+          onSubmitEditing={onPressNext}
           onChangeText={(value) => viewModel.onChangePassword(value)}
           InputRightElement={
             <FontAwesome
@@ -110,17 +202,18 @@ export const SignupScreen = observer(() => {
           title="Next"
           width={'full'}
           size={12}
-          onPress={() => viewModel.nextStep()}
+          disabled={!Boolean(viewModel.password.length >= 6)}
+          onPress={onPressNext}
           _text={{
             fontSize: 16,
             fontWeight: 'bold',
           }}
         />
-      </React.Fragment>
+      </VStack>
     );
-  };
+  });
 
-  const renderStep3 = () => {
+  const Step3 = observer(() => {
     return (
       <VStack flex={1} space={3} paddingTop={20} justifyContent="space-between">
         <VStack space={3}>
@@ -136,6 +229,7 @@ export const SignupScreen = observer(() => {
             width={'full'}
             size={12}
             marginTop={4}
+            isLoading={authViewModel.loadingSignup}
             onPress={onPressCompleteSignup}
             _text={{
               fontSize: 16,
@@ -168,16 +262,16 @@ export const SignupScreen = observer(() => {
         </Text>
       </VStack>
     );
-  };
+  });
 
   const renderStep = () => {
     switch (viewModel.step) {
       case 1:
-        return renderStep1();
+        return <Step1 key={1} />;
       case 2:
-        return renderStep2();
+        return <Step2 key={2} />;
       default:
-        return renderStep3();
+        return <Step3 key={3} />;
     }
   };
 

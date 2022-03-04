@@ -6,6 +6,7 @@ import {
   auth,
   doCreateUserWithEmailAndPassword,
   doSignInWithEmailAndPassword,
+  doFetchSignInMethodsForEmail,
   doSignOut,
 } from 'services/firebase-service';
 import { authLocalStorage, loge } from 'shared';
@@ -86,6 +87,11 @@ export class AuthService {
         errorCode: -999,
       };
     }
+  }
+
+  async checkAccountExisted(email: string): Promise<ResponseModel> {
+    const emails = await doFetchSignInMethodsForEmail(email);
+    return emails.length > 0 ? { errorCode: -99, data: true } : { errorCode: 0, data: false };
   }
 
   async doLogout(): Promise<ResponseModel> {

@@ -4,6 +4,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
   signOut,
 } from 'firebase/auth';
 import {
@@ -122,6 +123,17 @@ const doSignInWithEmailAndPassword = async ({
   }
 };
 
+const doFetchSignInMethodsForEmail = async (email: string): Promise<Array<string>> => {
+  try {
+    const emails = await fetchSignInMethodsForEmail(auth, email);
+
+    return emails;
+  } catch (error: any) {
+    loge(TAG, `${error.message}`);
+    throw error;
+  }
+};
+
 export {
   storage,
   storageRef,
@@ -134,6 +146,7 @@ export {
   doGetUserDocument,
   doGetCurrentUser,
   doCreateUserProfileDocument,
+  doFetchSignInMethodsForEmail,
   database,
   databaseRef,
   databaseSet,

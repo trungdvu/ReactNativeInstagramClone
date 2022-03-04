@@ -17,8 +17,9 @@ import { PrimaryButton, PrimaryInput } from 'components';
 import { resetWithScreen } from 'navigators/navigation-utilities';
 import { ScreenName } from 'consts';
 import { authViewModel } from 'view-models';
+import { observer, Observer } from 'mobx-react-lite';
 
-export const LoginScreen = () => {
+export const LoginScreen = observer(() => {
   const [isHiddenPaassword, setIsHiddenPassword] = useState(true);
   const { colorMode } = useColorMode();
   const {
@@ -129,7 +130,23 @@ export const LoginScreen = () => {
             <FormControl.ErrorMessage>{errors.password?.message}</FormControl.ErrorMessage>
           </FormControl>
 
+          <Observer>
+            {() => {
+              const { error } = authViewModel;
+              if (!error?.errorCode) {
+                return <React.Fragment />;
+              } else {
+                return (
+                  <Text color={'light.info.error'} textAlign="left" width={'full'}>
+                    {`*${error?.data}`}
+                  </Text>
+                );
+              }
+            }}
+          </Observer>
+
           <PrimaryButton
+            isLoading={authViewModel.loadingLogin}
             title="Log in"
             width={'full'}
             size={12}
@@ -203,4 +220,4 @@ export const LoginScreen = () => {
       </Pressable>
     </ScrollView>
   );
-};
+});
