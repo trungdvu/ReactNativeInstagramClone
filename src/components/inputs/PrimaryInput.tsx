@@ -25,6 +25,7 @@ export const PrimaryInput = ({
     placeholder={placeholder}
     InputRightElement={InputRightElement}
     value={value}
+    autoCapitalize="none"
     onBlur={onBlur}
     onChangeText={onChangeText}
     {...props}

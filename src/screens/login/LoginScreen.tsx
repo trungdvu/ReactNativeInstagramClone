@@ -20,7 +20,7 @@ import { authViewModel } from 'view-models';
 import { observer, Observer } from 'mobx-react-lite';
 
 export const LoginScreen = observer(() => {
-  const [isHiddenPaassword, setIsHiddenPassword] = useState(true);
+  const [isHiddenPassword, setIsHiddenPassword] = useState(true);
   const { colorMode } = useColorMode();
   const {
     control,
@@ -91,6 +91,7 @@ export const LoginScreen = observer(() => {
               rules={{ required: 'Please enter your email!' }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <PrimaryInput
+                  padding={3}
                   value={value}
                   placeholder="Email"
                   onChangeText={(value) => onChange(value)}
@@ -110,7 +111,7 @@ export const LoginScreen = observer(() => {
                 <PrimaryInput
                   value={value}
                   placeholder="Password"
-                  isHiddenPassword={isHiddenPaassword}
+                  isHiddenPassword={isHiddenPassword}
                   onChangeText={(value) => onChange(value)}
                   onBlur={onBlur}
                   InputRightElement={
@@ -120,7 +121,7 @@ export const LoginScreen = observer(() => {
                         padding: 1,
                       }}
                       size={20}
-                      name={isHiddenPaassword ? 'eye-slash' : 'eye'}
+                      name={isHiddenPassword ? 'eye-slash' : 'eye'}
                       onPress={toggleHiddenPassword}
                     />
                   }

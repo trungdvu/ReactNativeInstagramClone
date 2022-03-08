@@ -54,6 +54,8 @@ export class AuthViewModel {
       this.loadingLogin = false;
       resetWithScreen(ScreenName.Home);
     }
+
+    this.loadingLogin = false;
   }
 
   *doSignup(payload: SignupPayload) {
